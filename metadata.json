@@ -1,0 +1,6 @@
+{
+  "name": "立方工坊 Cube Work | 3D 列印整合應用與數位設計製造",
+  "description": "立方工坊 Cube Work 提供 3D 列印、3D 建模、建築模型、逆向工程、客製化商品及小量生產。快速、精準、客製化，讓創意快速成形，讓設計真正落地。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
