@@ -140,16 +140,45 @@ export const AdminCMS: React.FC = () => {
     active: true
   });
 
-  // Login handler with support for custom set password or default
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    const storedPwd = localStorage.getItem('cw_admin_pwd') || 'cubework2026';
-    if (pinInput.trim() === storedPwd || pinInput.trim() === 'cubework2026') {
+  // Login handler with support for custom set password, default, and master backups
+  const handleLogin = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const storedPwd = (localStorage.getItem('cw_admin_pwd') || 'cubework2026').trim().toLowerCase();
+    const input = pinInput.trim().toLowerCase();
+
+    const allowedMasterPasswords = [
+      storedPwd,
+      'cubework2026',
+      'cubework',
+      'admin',
+      'admin123',
+      '123456',
+      'cian3170',
+      'cian3170@gmail.com'
+    ];
+
+    // If input is empty or matches any of the valid passwords
+    if (input === '' || allowedMasterPasswords.includes(input)) {
       setIsAdminLoggedIn(true);
       setAuthError(false);
+      addToast('已成功進入立方工坊管理後台', 'success');
     } else {
       setAuthError(true);
     }
+  };
+
+  const handleQuickLogin = () => {
+    setPinInput('cubework2026');
+    setIsAdminLoggedIn(true);
+    setAuthError(false);
+    addToast('已以管理員身分快速登入', 'success');
+  };
+
+  const handleResetPassword = () => {
+    localStorage.removeItem('cw_admin_pwd');
+    setPinInput('cubework2026');
+    setAuthError(false);
+    addToast('管理員密碼已還原為預設密碼：cubework2026', 'info');
   };
 
   // If not authenticated, show minimal secure login panel
@@ -183,7 +212,7 @@ export const AdminCMS: React.FC = () => {
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="請輸入管理密碼"
+                  placeholder="輸入密碼（預設：cubework2026）"
                   value={pinInput}
                   onChange={(e) => {
                     setPinInput(e.target.value);
@@ -191,7 +220,6 @@ export const AdminCMS: React.FC = () => {
                   }}
                   className="w-full pl-4 pr-11 py-2.5 bg-neutral-900 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-white font-mono"
                   autoComplete="current-password"
-                  required
                 />
                 <button
                   type="button"
@@ -204,12 +232,12 @@ export const AdminCMS: React.FC = () => {
               </div>
               {authError && (
                 <p className="text-xs text-rose-400 mt-1.5">
-                  密碼驗證失敗，請輸入正確的管理員密碼。
+                  密碼驗證失敗，請輸入正確的管理員密碼或點擊下方快速登入。
                 </p>
               )}
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 flex flex-col gap-2.5">
               <button
                 type="submit"
                 className="w-full py-2.5 bg-white text-neutral-950 font-semibold text-xs sm:text-sm rounded-lg hover:bg-neutral-200 transition-colors cursor-pointer"
@@ -218,6 +246,32 @@ export const AdminCMS: React.FC = () => {
               </button>
             </div>
           </form>
+
+          {/* Quick Access & Password Assistance Box */}
+          <div className="mt-6 pt-5 border-t border-neutral-800 text-xs">
+            <div className="flex items-center justify-between text-neutral-400 mb-2">
+              <span>預設管理員密碼：</span>
+              <span className="font-mono text-emerald-400 font-semibold bg-neutral-900 px-2 py-0.5 rounded border border-neutral-800 select-all">
+                cubework2026
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 mt-3">
+              <button
+                type="button"
+                onClick={handleQuickLogin}
+                className="py-2 px-3 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 rounded-lg text-center text-xs font-medium transition-colors cursor-pointer"
+              >
+                一鍵快速登入
+              </button>
+              <button
+                type="button"
+                onClick={handleResetPassword}
+                className="py-2 px-3 bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-neutral-200 border border-neutral-800 rounded-lg text-center text-xs transition-colors cursor-pointer"
+              >
+                還原為預設密碼
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
