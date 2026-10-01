@@ -5,6 +5,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    base:'/立方工坊/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
